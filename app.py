@@ -157,6 +157,17 @@ class SMTPSettings(db.Model):
     from_email = db.Column(db.String(120), nullable=False)
 
 
+class AutoSend(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    schedule_name = db.Column(db.String(100), nullable=False)
+    is_recurring = db.Column(db.Boolean, default=False)
+    frequency = db.Column(db.String(50), nullable=True)
+    schedule_time = db.Column(db.String(50), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    recipients = db.Column(db.Text, nullable=False)  # Salviamo gli indirizzi email separati da virgola
+
+
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
@@ -201,20 +212,46 @@ def settings():
     return render_template('settings.html', settings=settings)
 
 # Route per la gestione degli invii automatici
-@app.route('/auto_sends', methods=['GET', 'POST'])
+@app.route('/auto-sends', methods=['GET', 'POST'])
 def auto_sends():
     if request.method == 'POST':
-        # Qui gestisci la logica per salvare gli invii automatici, ad esempio salvi l'orario e il contenuto
+        schedule_name = request.form['schedule_name']
+        is_recurring = 'is_recurring' in request.form
+        frequency = request.form.get('frequency', None)
         schedule_time = request.form['schedule_time']
+        subject = request.form['subject']
         content = request.form['content']
-        # Logica per pianificare l'invio dell'email (es. salvare in DB o usare un task scheduler)
-        pass
-    return render_template('auto_sends.html')
+        recipients = request.form.getlist('recipients')
+        manual_recipients = request.form.get('manual_recipients', '').split(',')
 
+        # Combina destinatari
+        all_recipients = recipients + [email.strip() for email in manual_recipients if email.strip()]
+        recipients_str = ','.join(all_recipients)
+
+        # Salva nel database
+        new_schedule = AutoSend(
+            schedule_name=schedule_name,
+            is_recurring=is_recurring,
+            frequency=frequency,
+            schedule_time=schedule_time,
+            subject=subject,
+            content=content,
+            recipients=recipients_str,
+        )
+        db.session.add(new_schedule)
+        db.session.commit()
+
+        return "Programmazione Salvata!"
+
+    # Recupera persone dal database per il menu a tendina
+    people = Person.query.all()  # Sostituisci con il tuo modello per le persone
+    return render_template('auto_sends.html', people=people)
 
 #Route aggiunta eventi in dashboard
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
+    schedules = AutoSend.query.all()
+    return render_template('dashboard.html', schedules=schedules)
     service = Service.query.first()
     return render_template('dashboard.html', service=service)
 
