@@ -22,6 +22,11 @@ class SMTPSettings(db.Model):
     password = db.Column(db.String(120), nullable=False)
     from_email = db.Column(db.String(120), nullable=False)
 
+class Service(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jellyfin_url = db.Column(db.String(255), nullable=False)
+    jellyfin_api_key = db.Column(db.String(255), nullable=False)
+
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
