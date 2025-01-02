@@ -9,18 +9,6 @@
             <input type="url" id="jellyfin_url" name="jellyfin_url" class="form-control"
                    value="{{ service.jellyfin_url if service else '' }}" required>
         </div>
-        <div class="form-check">
-    <input type="checkbox" id="monitor_stream_started" name="monitor_stream_started"
-           class="form-check-input" {{ 'checked' if service and service.monitor_stream_started else '' }}>
-    <label for="monitor_stream_started" class="form-check-label">Monitorare Avvio Streaming</label>
-    <select name="stream_started_timeframe" class="form-control">
-        <option value="15 min" {{ 'selected' if service and service.stream_started_timeframe == '15 min' else '' }}>Ogni 15 Min</option>
-        <option value="30 min" {{ 'selected' if service and service.stream_started_timeframe == '30 min' else '' }}>Ogni 30 Min</option>
-        <option value="1 hour" {{ 'selected' if service and service.stream_started_timeframe == '1 hour' else '' }}>Ogni Ora</option>
-        <option value="4 hours" {{ 'selected' if service and service.stream_started_timeframe == '4 hours' else '' }}>Ogni 4 Ore</option>
-    </select>
-</div>
-
         <div class="form-group">
             <label for="jellyfin_api_key">Chiave API di Jellyfin</label>
             <input type="text" id="jellyfin_api_key" name="jellyfin_api_key" class="form-control"
