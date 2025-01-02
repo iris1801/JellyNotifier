@@ -325,18 +325,6 @@ def edit_person(person_id):
     return render_template('edit_person.html', person=person)
 
 
-# Dashboard
-@app.route('/dashboard')
-def dashboard():
-    # Qui puoi raccogliere i dati sugli invii automatici (da un database o file)
-    # Per ora simuliamo dei dati
-    auto_sends = [
-        {"time": "2025-01-03 10:00", "content": "Email di esempio 1"},
-        {"time": "2025-01-05 12:00", "content": "Email di esempio 2"}
-    ]
-    
-    total_sent = len(auto_sends)  # Totale invii
-    return render_template('dashboard.html', auto_sends=auto_sends, total_sent=total_sent)
 
 
 # Invio manuale di email
