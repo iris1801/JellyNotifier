@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Gestione Persone</h1>
+
+    <!-- Form per aggiungere una persona -->
+    <form method="POST">
+        <div class="form-group">
+            <label for="first_name">Nome</label>
+            <input type="text" id="first_name" name="first_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Cognome</label>
+            <input type="text" id="last_name" name="last_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Numero di Telefono</label>
+            <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Indirizzo Email</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Aggiungi Persona</button>
+    </form>
+
+    <!-- Elenco delle persone -->
+    <h2>Elenco Persone Registrate</h2>
+    <ul class="list-group">
+        {% for person in people %}
+            <li class="list-group-item">
+                {{ person.first_name }} {{ person.last_name }} - {{ person.phone_number }} - {{ person.email }}
+                <!-- Puoi aggiungere un pulsante per modificare o eliminare una persona -->
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
