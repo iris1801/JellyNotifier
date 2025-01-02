@@ -4,6 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta
+from flask import Blueprint, jsonify
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -295,7 +296,6 @@ def dashboard():
     return render_template('dashboard.html', service=service)
 
 
-
 #Persone
 @app.route('/people', methods=['GET', 'POST'])
 def people():
@@ -401,6 +401,16 @@ def edit_person(person_id):
     return render_template('edit_person.html', person=person)
 
 
+
+# endpoint Dashboard
+dashboard_bp = Blueprint("dashboard", __name__)
+
+@dashboard_bp.route("/dashboard/libraries", methods=["GET"])
+def get_libraries():
+    libraries = get_jellyfin_libraries()
+    if "error" in libraries:
+        return jsonify({"error": libraries["error"]}), 400
+    return jsonify(libraries)
 
 
 # Invio manuale di email
