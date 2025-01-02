@@ -98,6 +98,10 @@ def monitor_transcoding():
         except Exception as e:
             logging.error(f"Errore nella chiamata API Transcodifica: {e}")
 
+# Configura APScheduler
+scheduler = BackgroundScheduler()
+
+
 # Funzione di Sync manuale
 def sync_libraries():
     """
@@ -113,11 +117,7 @@ def sync_libraries():
     except Exception as e:
         logging.error(f"Errore nella sincronizzazione delle librerie: {str(e)}")
 
-
-
-# Configura APScheduler
-scheduler = BackgroundScheduler()
-
+# Funzione per pianificare le attività
 def schedule_tasks():
     global scheduler
     if not scheduler.running:  # Evita di avviare lo scheduler più volte
@@ -125,7 +125,7 @@ def schedule_tasks():
 
     # Aggiungi i job alla coda
     scheduler.add_job(
-        func=sync_libraries,
+        func=sync_libraries,  # Deve essere riconosciuta qui
         trigger="interval",
         minutes=get_sync_timeframe(),
         id="sync_libraries",
