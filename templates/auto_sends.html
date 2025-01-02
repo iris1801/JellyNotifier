@@ -2,13 +2,77 @@
 
 {% block content %}
 <div class="container">
-<h1>Invii Automatici</h1>
-<form method="POST">
-    <label for="schedule_time">Orario di invio</label>
-    <input type="datetime-local" id="schedule_time" name="schedule_time" required>
-    <label for="content">Contenuto del messaggio</label>
-    <textarea id="content" name="content" rows="4" required></textarea>
-    <button type="submit">Salva Programmazione</button>
-</form>
+    <h1>Invii Automatici</h1>
+    <form method="POST">
+        <!-- Nome della programmazione -->
+        <div class="form-group">
+            <label for="schedule_name">Nome della Programmazione</label>
+            <input type="text" id="schedule_name" name="schedule_name" class="form-control" required>
+        </div>
+
+        <!-- Flag per invio periodico -->
+        <div class="form-check">
+            <input type="checkbox" id="is_recurring" name="is_recurring" class="form-check-input" onclick="toggleFrequency()">
+            <label for="is_recurring" class="form-check-label">Invio Periodico</label>
+        </div>
+
+        <!-- Selezione frequenza di invio -->
+        <div id="frequency_selector" style="display: none;">
+            <label for="frequency">Frequenza</label>
+            <select id="frequency" name="frequency" class="form-control">
+                <option value="hourly">Ogni Ora</option>
+                <option value="daily">Giornaliero</option>
+                <option value="weekly">Settimanale</option>
+                <option value="monthly">Mensile</option>
+            </select>
+        </div>
+
+        <!-- Orario di invio -->
+        <div class="form-group">
+            <label for="schedule_time">Orario di Invio</label>
+            <input type="datetime-local" id="schedule_time" name="schedule_time" class="form-control" required>
+        </div>
+
+        <!-- Oggetto -->
+        <div class="form-group">
+            <label for="subject">Oggetto</label>
+            <input type="text" id="subject" name="subject" class="form-control" required>
+        </div>
+
+        <!-- Contenuto del messaggio -->
+        <div class="form-group">
+            <label for="content">Contenuto del Messaggio</label>
+            <textarea id="content" name="content" class="form-control" rows="4" required></textarea>
+        </div>
+
+        <!-- Destinatari -->
+        <div class="form-group">
+            <label for="recipients">Destinatari</label>
+            <select id="recipients" name="recipients" class="form-control" multiple>
+                {% for person in people %}
+                <option value="{{ person.email }}">{{ person.name }} ({{ person.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Campo per aggiungere manualmente destinatari -->
+        <div class="form-group">
+            <label for="manual_recipients">Aggiungi Destinatari Manualmente</label>
+            <input type="text" id="manual_recipients" name="manual_recipients" class="form-control"
+                   placeholder="Inserisci email separate da virgola">
+        </div>
+
+        <!-- Pulsante per salvare la programmazione -->
+        <button type="submit" class="btn btn-primary">Salva Programmazione</button>
+    </form>
 </div>
+
+<script>
+    // Mostra/nasconde il menu di selezione della frequenza
+    function toggleFrequency() {
+        const frequencySelector = document.getElementById('frequency_selector');
+        frequencySelector.style.display = document.getElementById('is_recurring').checked ? 'block' : 'none';
+    }
+</script>
 {% endblock %}
+

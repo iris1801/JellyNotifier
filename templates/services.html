@@ -37,6 +37,20 @@
         <option value="4 hours" {{ 'selected' if service and service.stream_started_timeframe == '4 hours' else '' }}>Ogni 4 Ore</option>
     </select>
 </div>
+
+<div class="form-check">
+    <input type="checkbox" id="monitor_transcoding" name="monitor_transcoding"
+           class="form-check-input" {{ 'checked' if service and service.monitor_transcoding else '' }}>
+    <label for="monitor_transcoding" class="form-check-label">Monitorare Transcoding</label>
+    <select name="transcoding_timeframe" class="form-control">
+        <option value="15 min" {{ 'selected' if service and service.transcoding_timeframe == '15 min' else '' }}>Ogni 15 Min</option>
+        <option value="30 min" {{ 'selected' if service and service.transcoding_timeframe == '30 min' else '' }}>Ogni 30 Min</option>
+        <option value="1 hour" {{ 'selected' if service and service.transcoding_timeframe == '1 hour' else '' }}>Ogni Ora</option>
+        <option value="4 hours" {{ 'selected' if service and service.transcoding_timeframe == '4 hours' else '' }}>Ogni 4 Ore</option>
+    </select>
+</div>
+
+
         <div class="form-check">
             <input type="checkbox" id="monitor_media_removed" name="monitor_media_removed"
                    class="form-check-input" {{ 'checked' if service and service.monitor_media_removed else '' }}>

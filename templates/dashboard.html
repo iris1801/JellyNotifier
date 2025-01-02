@@ -2,20 +2,28 @@
 
 {% block content %}
 <div class="container">
-<h1>Dashboard</h1>
-<p>Totale invii automatici: {{ total_sent }}</p>
-
-<h2>Invii programmati</h2>
-<ul>
-    {% for send in auto_sends %}
-    <li>Invio previsto: {{ send.time }} - Contenuto: {{ send.content }}</li>
-    {% endfor %}
-</ul>
-</div>
-<div class="container">
     <h1>Dashboard</h1>
+    <p>Totale invii automatici: {{ schedules|length }}</p>
+
+    <h2>Invii Programmati</h2>
+    {% if schedules %}
+        {% for schedule in schedules %}
+        <div class="card">
+            <h3>{{ schedule.schedule_name }}</h3>
+            <p>Oggetto: {{ schedule.subject }}</p>
+            <p>Destinatari: {{ schedule.recipients }}</p>
+            <p>Orario di Invio: {{ schedule.schedule_time }}</p>
+            {% if schedule.is_recurring %}
+                <p>Frequenza: {{ schedule.frequency }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Nessun invio programmato.</p>
+    {% endif %}
+
+    <h2>Eventi Monitorati</h2>
     {% if service %}
-        <h2>Eventi Monitorati</h2>
         <ul>
             {% if service.monitor_media_added %}
                 <li>Media Aggiunti (Frequenza: {{ service.media_added_timeframe }})</li>
@@ -31,7 +39,8 @@
             {% endif %}
         </ul>
     {% else %}
-        <p>Servizio Jellyfin non configurato.</p>
+        <p>Nessun evento monitorato. Configura il servizio Jellyfin per iniziare il monitoraggio.</p>
     {% endif %}
 </div>
 {% endblock %}
+
