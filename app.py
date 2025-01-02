@@ -307,6 +307,15 @@ def dashboard():
     service = Service.query.first()
     return render_template('dashboard.html', service=service)
 
+# Route per Sync manuale Jellyfin
+@app.route('/services/sync-now', methods=['POST'])
+def sync_now():
+    try:
+        sync_libraries()  # Chiama la funzione per sincronizzare le librerie
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 
 #Persone
 @app.route('/people', methods=['GET', 'POST'])
