@@ -181,7 +181,6 @@ def schedule_tasks():
                 id='transcoding',
             )
 
-        scheduler.start()
 
 # Convertitore per i timeframe
 def get_timeframe_in_minutes(timeframe):
