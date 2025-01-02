@@ -12,4 +12,26 @@
     {% endfor %}
 </ul>
 </div>
+<div class="container">
+    <h1>Dashboard</h1>
+    {% if service %}
+        <h2>Eventi Monitorati</h2>
+        <ul>
+            {% if service.monitor_media_added %}
+                <li>Media Aggiunti (Frequenza: {{ service.media_added_timeframe }})</li>
+            {% endif %}
+            {% if service.monitor_media_removed %}
+                <li>Media Rimossi (Frequenza: {{ service.media_removed_timeframe }})</li>
+            {% endif %}
+            {% if service.monitor_stream_started %}
+                <li>Stream Avviati (Frequenza: {{ service.stream_started_timeframe }})</li>
+            {% endif %}
+            {% if service.monitor_transcoding %}
+                <li>Transcodifica (Frequenza: {{ service.transcoding_timeframe }})</li>
+            {% endif %}
+        </ul>
+    {% else %}
+        <p>Servizio Jellyfin non configurato.</p>
+    {% endif %}
+</div>
 {% endblock %}
