@@ -130,6 +130,21 @@ def start_scheduler():
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///settings.db'
 db = SQLAlchemy(app)
 
+#Classi chiamate api
+class Service(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jellyfin_url = db.Column(db.String(255), nullable=False)
+    jellyfin_api_key = db.Column(db.String(255), nullable=False)
+    monitor_media_added = db.Column(db.Boolean, default=False)
+    monitor_media_removed = db.Column(db.Boolean, default=False)
+    monitor_stream_started = db.Column(db.Boolean, default=False)
+    monitor_transcoding = db.Column(db.Boolean, default=False)
+    media_added_timeframe = db.Column(db.String(20), default="15 min")
+    media_removed_timeframe = db.Column(db.String(20), default="15 min")
+    stream_started_timeframe = db.Column(db.String(20), default="15 min")
+    transcoding_timeframe = db.Column(db.String(20), default="15 min")
+
+
 # Modello per le impostazioni SMTP
 class SMTPSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
