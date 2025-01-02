@@ -8,6 +8,124 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
+from apscheduler.schedulers.background import BackgroundScheduler
+import requests
+import logging
+
+# Configura logging per debug
+logging.basicConfig(level=logging.INFO)
+
+# Funzioni per chiamate API
+def monitor_media_added():
+    service = Service.query.first()
+    if service and service.monitor_media_added:
+        try:
+            response = requests.get(
+                f"{service.jellyfin_url}/Library/MediaAdded",
+                headers={"X-Emby-Token": service.jellyfin_api_key},
+            )
+            logging.info(f"Media Aggiunti: {response.json()}")
+        except Exception as e:
+            logging.error(f"Errore nella chiamata API Media Aggiunti: {e}")
+
+def monitor_media_removed():
+    service = Service.query.first()
+    if service and service.monitor_media_removed:
+        try:
+            response = requests.get(
+                f"{service.jellyfin_url}/Library/MediaRemoved",
+                headers={"X-Emby-Token": service.jellyfin_api_key},
+            )
+            logging.info(f"Media Rimossi: {response.json()}")
+        except Exception as e:
+            logging.error(f"Errore nella chiamata API Media Rimossi: {e}")
+
+def monitor_stream_started():
+    service = Service.query.first()
+    if service and service.monitor_stream_started:
+        try:
+            response = requests.get(
+                f"{service.jellyfin_url}/Sessions",
+                headers={"X-Emby-Token": service.jellyfin_api_key},
+            )
+            logging.info(f"Stream Avviati: {response.json()}")
+        except Exception as e:
+            logging.error(f"Errore nella chiamata API Stream Avviati: {e}")
+
+def monitor_transcoding():
+    service = Service.query.first()
+    if service and service.monitor_transcoding:
+        try:
+            response = requests.get(
+                f"{service.jellyfin_url}/Transcoding",
+                headers={"X-Emby-Token": service.jellyfin_api_key},
+            )
+            logging.info(f"Transcodifica: {response.json()}")
+        except Exception as e:
+            logging.error(f"Errore nella chiamata API Transcodifica: {e}")
+
+# Configura APScheduler
+scheduler = BackgroundScheduler()
+
+def schedule_tasks():
+    service = Service.query.first()
+    if service:
+        # Rimuovi i job esistenti
+        scheduler.remove_all_jobs()
+
+        # Media aggiunti
+        if service.monitor_media_added:
+            scheduler.add_job(
+                monitor_media_added,
+                'interval',
+                minutes=get_timeframe_in_minutes(service.media_added_timeframe),
+                id='media_added',
+            )
+
+        # Media rimossi
+        if service.monitor_media_removed:
+            scheduler.add_job(
+                monitor_media_removed,
+                'interval',
+                minutes=get_timeframe_in_minutes(service.media_removed_timeframe),
+                id='media_removed',
+            )
+
+        # Stream avviati
+        if service.monitor_stream_started:
+            scheduler.add_job(
+                monitor_stream_started,
+                'interval',
+                minutes=get_timeframe_in_minutes(service.stream_started_timeframe),
+                id='stream_started',
+            )
+
+        # Transcodifica
+        if service.monitor_transcoding:
+            scheduler.add_job(
+                monitor_transcoding,
+                'interval',
+                minutes=get_timeframe_in_minutes(service.transcoding_timeframe),
+                id='transcoding',
+            )
+
+        scheduler.start()
+
+# Convertitore per i timeframe
+def get_timeframe_in_minutes(timeframe):
+    mapping = {
+        "15 min": 15,
+        "30 min": 30,
+        "1 hour": 60,
+        "4 hours": 240,
+    }
+    return mapping.get(timeframe, 15)
+
+# Avvio dello scheduler
+@app.before_first_request
+def start_scheduler():
+    schedule_tasks()
+
 # Configurazione del database per memorizzare le impostazioni SMTP
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///settings.db'
 db = SQLAlchemy(app)
