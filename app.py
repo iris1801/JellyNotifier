@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -20,6 +21,16 @@ class SMTPSettings(db.Model):
     username = db.Column(db.String(120), nullable=False)
     password = db.Column(db.String(120), nullable=False)
     from_email = db.Column(db.String(120), nullable=False)
+
+class Person(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+
+    def __repr__(self):
+        return f'<Person {self.first_name} {self.last_name}>'
 
 # Home Page per l'invio manuale delle email
 @app.route('/')
@@ -53,6 +64,54 @@ def settings():
         db.session.commit()
         flash('Settings updated!', 'success')
     return render_template('settings.html', settings=settings)
+
+# Route per la gestione degli invii automatici
+@app.route('/auto_sends', methods=['GET', 'POST'])
+def auto_sends():
+    if request.method == 'POST':
+        # Qui gestisci la logica per salvare gli invii automatici, ad esempio salvi l'orario e il contenuto
+        schedule_time = request.form['schedule_time']
+        content = request.form['content']
+        # Logica per pianificare l'invio dell'email (es. salvare in DB o usare un task scheduler)
+        pass
+    return render_template('auto_sends.html')
+
+
+#Persone
+@app.route('/people', methods=['GET', 'POST'])
+def people():
+    if request.method == 'POST':
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        phone_number = request.form['phone_number']
+        email = request.form['email']
+
+        # Aggiungi la nuova persona al database
+        new_person = Person(first_name=first_name, last_name=last_name, phone_number=phone_number, email=email)
+        db.session.add(new_person)
+        db.session.commit()
+
+        flash('Persona aggiunta con successo!', 'success')
+        return redirect(url_for('people'))
+
+    # Recupera tutte le persone dal database
+    people = Person.query.all()
+    return render_template('people.html', people=people)
+
+
+# Dashboard
+@app.route('/dashboard')
+def dashboard():
+    # Qui puoi raccogliere i dati sugli invii automatici (da un database o file)
+    # Per ora simuliamo dei dati
+    auto_sends = [
+        {"time": "2025-01-03 10:00", "content": "Email di esempio 1"},
+        {"time": "2025-01-05 12:00", "content": "Email di esempio 2"}
+    ]
+    
+    total_sent = len(auto_sends)  # Totale invii
+    return render_template('dashboard.html', auto_sends=auto_sends, total_sent=total_sent)
+
 
 # Invio manuale di email
 @app.route('/send_email', methods=['GET', 'POST'])
