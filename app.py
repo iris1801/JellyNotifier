@@ -98,6 +98,23 @@ def monitor_transcoding():
         except Exception as e:
             logging.error(f"Errore nella chiamata API Transcodifica: {e}")
 
+# Funzione di Sync manuale
+def sync_libraries():
+    """
+    Sincronizza le librerie da Jellyfin.
+    """
+    logging.info("Sincronizzazione delle librerie in corso...")
+    try:
+        libraries = get_jellyfin_libraries()
+        if "error" in libraries:
+            logging.error(f"Errore durante il recupero delle librerie: {libraries['error']}")
+        else:
+            logging.info(f"Librerie sincronizzate con successo: {libraries}")
+    except Exception as e:
+        logging.error(f"Errore nella sincronizzazione delle librerie: {str(e)}")
+
+
+
 # Configura APScheduler
 scheduler = BackgroundScheduler()
 
