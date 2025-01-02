@@ -41,6 +41,42 @@
     {% else %}
         <p>Nessun evento monitorato. Configura il servizio Jellyfin per iniziare il monitoraggio.</p>
     {% endif %}
-</div>
-{% endblock %}
 
+    <!-- Sezione per visualizzare le librerie -->
+    <h2>Librerie Jellyfin</h2>
+    <div id="libraries">
+        <p>Caricamento in corso...</p>
+    </div>
+</div>
+
+<!-- Sezione per JavaScript -->
+<script>
+    // Funzione per caricare le librerie Jellyfin
+    fetch("/dashboard/libraries")
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("libraries");
+            container.innerHTML = ""; // Svuota il contenuto predefinito
+
+            if (data.error) {
+                console.error(data.error);
+                container.innerText = "Errore: " + data.error;
+            } else {
+                data.forEach(library => {
+                    const item = document.createElement("div");
+                    item.classList.add("card"); // Aggiunge stile simile alle altre card
+                    item.innerHTML = `
+                        <h3>${library.Name}</h3>
+                        <p>Elementi: ${library.ItemCount}</p>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            const container = document.getElementById("libraries");
+            container.innerText = "Errore nel recupero delle librerie.";
+        });
+</script>
+{% endblock %}
