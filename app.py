@@ -324,13 +324,14 @@ def auto_sends():
     people = Person.query.all()  # Sostituisci con il tuo modello per le persone
     return render_template('auto_sends.html', people=people)
 
-#Route aggiunta eventi in dashboard
+
+# Route eventi dashboard
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
-    schedules = AutoSend.query.all()
-    return render_template('dashboard.html', schedules=schedules)
-    service = Service.query.first()
-    return render_template('dashboard.html', service=service)
+    schedules = AutoSend.query.all()  # Recupera tutti gli invii automatici
+    service = Service.query.first()  # Recupera il primo servizio configurato (se presente)
+    
+    return render_template('dashboard.html', schedules=schedules, service=service)
 
 # Route per Sync manuale Jellyfin
 @app.route('/services/sync-now', methods=['POST'])
