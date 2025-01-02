@@ -49,6 +49,41 @@
     </div>
 </div>
 
+<div class="container">
+    <h1>Configurazione Servizi</h1>
+    <form method="post">
+        <!-- Campi per URL e chiave API -->
+        <label for="jellyfin_url">Jellyfin URL</label>
+        <input type="text" id="jellyfin_url" name="jellyfin_url" value="{{ service.jellyfin_url }}">
+        
+        <label for="api_key">Jellyfin API Key</label>
+        <input type="text" id="api_key" name="api_key" value="{{ service.api_key }}">
+
+        <!-- Altri campi -->
+        <label for="sync_timeframe">Frequenza sincronizzazione (minuti)</label>
+        <input type="number" id="sync_timeframe" name="sync_timeframe" value="{{ service.sync_timeframe }}">
+
+        <button type="submit">Salva</button>
+    </form>
+
+    <button id="sync-now" class="btn">Sincronizza Ora</button>
+</div>
+
+<script>
+    document.getElementById("sync-now").addEventListener("click", () => {
+        fetch("/services/sync-now", { method: "POST" })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Sincronizzazione completata.");
+                } else {
+                    alert("Errore: " + data.error);
+                }
+            })
+            .catch(err => alert("Errore nel tentativo di sincronizzare."));
+    });
+</script>
+
 <!-- Sezione per JavaScript -->
 <script>
     // Funzione per caricare le librerie Jellyfin
