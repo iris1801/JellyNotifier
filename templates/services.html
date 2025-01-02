@@ -14,6 +14,30 @@
             <input type="text" id="jellyfin_api_key" name="jellyfin_api_key" class="form-control"
                    value="{{ service.jellyfin_api_key if service else '' }}" required>
         </div>
+<h2>Eventi da Monitorare</h2>
+        <div class="form-check">
+            <input type="checkbox" id="monitor_media_added" name="monitor_media_added"
+                   class="form-check-input" {{ 'checked' if service and service.monitor_media_added else '' }}>
+            <label for="monitor_media_added" class="form-check-label">Monitorare Media Aggiunti</label>
+            <select name="media_added_timeframe" class="form-control">
+                <option value="15 min" {{ 'selected' if service and service.media_added_timeframe == '15 min' else '' }}>Ogni 15 Min</option>
+                <option value="30 min" {{ 'selected' if service and service.media_added_timeframe == '30 min' else '' }}>Ogni 30 Min</option>
+                <option value="1 hour" {{ 'selected' if service and service.media_added_timeframe == '1 hour' else '' }}>Ogni Ora</option>
+                <option value="4 hours" {{ 'selected' if service and service.media_added_timeframe == '4 hours' else '' }}>Ogni 4 Ore</option>
+            </select>
+        </div>
+
+        <div class="form-check">
+            <input type="checkbox" id="monitor_media_removed" name="monitor_media_removed"
+                   class="form-check-input" {{ 'checked' if service and service.monitor_media_removed else '' }}>
+            <label for="monitor_media_removed" class="form-check-label">Monitorare Media Rimossi</label>
+            <select name="media_removed_timeframe" class="form-control">
+                <option value="15 min" {{ 'selected' if service and service.media_removed_timeframe == '15 min' else '' }}>Ogni 15 Min</option>
+                <option value="30 min" {{ 'selected' if service and service.media_removed_timeframe == '30 min' else '' }}>Ogni 30 Min</option>
+                <option value="1 hour" {{ 'selected' if service and service.media_removed_timeframe == '1 hour' else '' }}>Ogni Ora</option>
+                <option value="4 hours" {{ 'selected' if service and service.media_removed_timeframe == '4 hours' else '' }}>Ogni 4 Ore</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary">Salva</button>
     </form>
 </div>
