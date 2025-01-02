@@ -1,0 +1,8 @@
+<form method="post" action="{{ url_for('send_email') }}">
+    <input type="text" name="subject" placeholder="Subject" required><br>
+    <textarea name="body" placeholder="Email body" required></textarea><br>
+    <input type="text" name="recipients" placeholder="Recipient emails (comma separated)" required><br>
+    <button type="submit">Send Email</button>
+</form>
+<br>
+<a href="{{ url_for('settings') }}">SMTP Settings</a>

@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Impostazioni SMTP</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="server">Server SMTP</label>
+                <input type="text" id="server" name="server" class="form-control" value="{{ settings.server }}" required>
+            </div>
+            <div class="form-group">
+                <label for="port">Porta</label>
+                <input type="number" id="port" name="port" class="form-control" value="{{ settings.port }}" required>
+            </div>
+            <div class="form-group">
+                <label for="encryption">Crittografia</label>
+                <select id="encryption" name="encryption" class="form-control">
+                    <option value="SSL" {% if settings.encryption == 'SSL' %}selected{% endif %}>SSL</option>
+                    <option value="TLS" {% if settings.encryption == 'TLS' %}selected{% endif %}>TLS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="username">Nome Utente</label>
+                <input type="text" id="username" name="username" class="form-control" value="{{ settings.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" value="{{ settings.password }}" required>
+            </div>
+            <div class="form-group">
+                <label for="from_email">Indirizzo mittente</label>
+                <input type="email" id="from_email" name="from_email" class="form-control" value="{{ settings.from_email }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Salva Impostazioni</button>
+        </form>
+    </div>
+{% endblock %}
