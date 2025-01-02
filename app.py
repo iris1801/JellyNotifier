@@ -200,6 +200,61 @@ def auto_sends():
     return render_template('auto_sends.html')
 
 
+# Route per chiamate api
+@app.route('/services', methods=['GET', 'POST'])
+def services():
+    service = Service.query.first()
+
+    if request.method == 'POST':
+        # Aggiorna i dati come prima
+        jellyfin_url = request.form['jellyfin_url']
+        jellyfin_api_key = request.form['jellyfin_api_key']
+        monitor_media_added = 'monitor_media_added' in request.form
+        monitor_media_removed = 'monitor_media_removed' in request.form
+        monitor_stream_started = 'monitor_stream_started' in request.form
+        monitor_transcoding = 'monitor_transcoding' in request.form
+        media_added_timeframe = request.form['media_added_timeframe']
+        media_removed_timeframe = request.form['media_removed_timeframe']
+        stream_started_timeframe = request.form['stream_started_timeframe']
+        transcoding_timeframe = request.form['transcoding_timeframe']
+
+        if service:
+            service.jellyfin_url = jellyfin_url
+            service.jellyfin_api_key = jellyfin_api_key
+            service.monitor_media_added = monitor_media_added
+            service.monitor_media_removed = monitor_media_removed
+            service.monitor_stream_started = monitor_stream_started
+            service.monitor_transcoding = monitor_transcoding
+            service.media_added_timeframe = media_added_timeframe
+            service.media_removed_timeframe = media_removed_timeframe
+            service.stream_started_timeframe = stream_started_timeframe
+            service.transcoding_timeframe = transcoding_timeframe
+        else:
+            service = Service(
+                jellyfin_url=jellyfin_url,
+                jellyfin_api_key=jellyfin_api_key,
+                monitor_media_added=monitor_media_added,
+                monitor_media_removed=monitor_media_removed,
+                monitor_stream_started=monitor_stream_started,
+                monitor_transcoding=monitor_transcoding,
+                media_added_timeframe=media_added_timeframe,
+                media_removed_timeframe=media_removed_timeframe,
+                stream_started_timeframe=stream_started_timeframe,
+                transcoding_timeframe=transcoding_timeframe,
+            )
+            db.session.add(service)
+
+        db.session.commit()
+
+        # Riattiva lo scheduler
+        schedule_tasks()
+
+        flash('Dati del servizio aggiornati con successo!', 'success')
+        return redirect(url_for('services'))
+
+    return render_template('services.html', service=service)
+
+
 #Persone
 @app.route('/people', methods=['GET', 'POST'])
 def people():
