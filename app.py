@@ -145,6 +145,12 @@ class Service(db.Model):
     stream_started_timeframe = db.Column(db.String(20), default="15 min")
     transcoding_timeframe = db.Column(db.String(20), default="15 min")
 
+#Classe per config servizi
+class ServiceConfig(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(255), nullable=False)
+    api_key = db.Column(db.String(255), nullable=False)
+
 
 # Modello per le impostazioni SMTP
 class SMTPSettings(db.Model):
