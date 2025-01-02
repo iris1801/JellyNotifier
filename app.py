@@ -102,6 +102,18 @@ def monitor_transcoding():
 scheduler = BackgroundScheduler()
 
 def schedule_tasks():
+    global scheduler
+    if not scheduler.running:  # Evita di avviare lo scheduler più volte
+        scheduler.start()
+
+    # Aggiungi i job alla coda
+    scheduler.add_job(
+        func=sync_libraries,
+        trigger="interval",
+        minutes=get_sync_timeframe(),
+        id="sync_libraries",
+        replace_existing=True
+    )
     service = Service.query.first()
     if service:
         # Rimuovi i job esistenti
