@@ -117,6 +117,15 @@ def sync_libraries():
     except Exception as e:
         logging.error(f"Errore nella sincronizzazione delle librerie: {str(e)}")
 
+
+# Funzione per ottenere il timeframe per la sincronizzazione
+def get_sync_timeframe():
+    service = Service.query.first()
+    if service:
+        # Restituisce il timeframe di sincronizzazione (in minuti)
+        return get_timeframe_in_minutes(service.media_added_timeframe)
+    return 15  # Imposta il valore di default a 15 minuti se non trovato
+
 # Funzione per pianificare le attività
 def schedule_tasks():
     global scheduler
