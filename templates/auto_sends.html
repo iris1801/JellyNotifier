@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+<h1>Invii Automatici</h1>
+<form method="POST">
+    <label for="schedule_time">Orario di invio</label>
+    <input type="datetime-local" id="schedule_time" name="schedule_time" required>
+    <label for="content">Contenuto del messaggio</label>
+    <textarea id="content" name="content" rows="4" required></textarea>
+    <button type="submit">Salva Programmazione</button>
+</form>
+</div>
+{% endblock %}
