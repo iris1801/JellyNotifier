@@ -98,6 +98,33 @@ def people():
     people = Person.query.all()
     return render_template('people.html', people=people)
 
+# Elimina Persone
+@app.route('/delete_person/<int:person_id>', methods=['POST'])
+def delete_person(person_id):
+    person = Person.query.get_or_404(person_id)
+    db.session.delete(person)
+    db.session.commit()
+    flash('Persona eliminata con successo!', 'danger')
+    return redirect(url_for('people'))
+
+
+# Modifica persone
+@app.route('/edit_person/<int:person_id>', methods=['GET', 'POST'])
+def edit_person(person_id):
+    person = Person.query.get_or_404(person_id)
+
+    if request.method == 'POST':
+        person.first_name = request.form['first_name']
+        person.last_name = request.form['last_name']
+        person.phone_number = request.form['phone_number']
+        person.email = request.form['email']
+
+        db.session.commit()
+        flash('Persona aggiornata con successo!', 'success')
+        return redirect(url_for('people'))
+
+    return render_template('edit_person.html', person=person)
+
 
 # Dashboard
 @app.route('/dashboard')
