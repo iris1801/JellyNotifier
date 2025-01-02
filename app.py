@@ -52,6 +52,39 @@ def monitor_stream_started():
         except Exception as e:
             logging.error(f"Errore nella chiamata API Stream Avviati: {e}")
 
+
+# Funzione recupero librerie
+def get_jellyfin_libraries():
+    # Recupera le configurazioni dal database
+    service_config = ServiceConfig.query.first()
+    if not service_config:
+        return {"error": "Configurazione non trovata. Compila il menu Servizi."}
+
+    url = service_config.url
+    api_key = service_config.api_key
+
+    # Effettua la chiamata all'endpoint
+    headers = {"X-Emby-Token": api_key}
+    try:
+        # Recupera l'ID utente
+        response = requests.get(f"{url}/Users", headers=headers)
+        response.raise_for_status()
+        users = response.json()
+
+        # Usa il primo utente per semplicità
+        user_id = users[0]["Id"]
+
+        # Recupera le librerie
+        response = requests.get(f"{url}/Users/{user_id}/Views", headers=headers)
+        response.raise_for_status()
+        libraries = response.json()["Items"]
+
+        return libraries
+
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
+
+
 def monitor_transcoding():
     service = Service.query.first()
     if service and service.monitor_transcoding:
