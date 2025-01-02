@@ -112,6 +112,29 @@ def delete_person(person_id):
     flash('Persona eliminata con successo!', 'danger')
     return redirect(url_for('people'))
 
+# Scheda servizi
+@app.route('/services', methods=['GET', 'POST'])
+def services():
+    service = Service.query.first()
+
+    if request.method == 'POST':
+        jellyfin_url = request.form['jellyfin_url']
+        jellyfin_api_key = request.form['jellyfin_api_key']
+
+        if service:
+            # Aggiorna i dati esistenti
+            service.jellyfin_url = jellyfin_url
+            service.jellyfin_api_key = jellyfin_api_key
+        else:
+            # Crea un nuovo record
+            service = Service(jellyfin_url=jellyfin_url, jellyfin_api_key=jellyfin_api_key)
+            db.session.add(service)
+
+        db.session.commit()
+        flash('Dati del servizio aggiornati con successo!', 'success')
+        return redirect(url_for('services'))
+
+    return render_template('services.html', service=service)
 
 # Modifica persone
 @app.route('/edit_person/<int:person_id>', methods=['GET', 'POST'])
