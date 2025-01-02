@@ -215,6 +215,12 @@ def auto_sends():
     return render_template('auto_sends.html')
 
 
+#Route aggiunta eventi in dashboard
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    service = Service.query.first()
+    return render_template('dashboard.html', service=service)
+
 # Route Servizi
 @app.route('/services', methods=['GET', 'POST'])
 def services():
