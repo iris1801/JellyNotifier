@@ -44,6 +44,9 @@
 
     <!-- Sezione per visualizzare le librerie -->
     <h2>Librerie Jellyfin</h2>
+{% for library in libraries %}
+    <div>{{ library.Name }}</div>
+{% endfor %}
     <div id="libraries">
         <p>Caricamento in corso...</p>
     </div>
