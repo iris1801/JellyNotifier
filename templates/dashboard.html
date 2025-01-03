@@ -44,9 +44,9 @@
 
     <!-- Sezione per visualizzare le librerie -->
     <h2>Librerie Jellyfin</h2>
-{% for library in libraries %}
-    <div>{{ library.Name }}</div>
-{% endfor %}
+    {% for library in libraries %}
+        <div>{{ library.Name }}</div>
+    {% endfor %}
     <div id="libraries">
         <p>Caricamento in corso...</p>
     </div>
@@ -57,22 +57,36 @@
     <form method="post">
         <!-- Campi per URL e chiave API -->
         <label for="jellyfin_url">Jellyfin URL</label>
-        <input type="text" id="jellyfin_url" name="jellyfin_url" value="{{ service.jellyfin_url }}">
-        
+        <input type="text" id="jellyfin_url" name="jellyfin_url" 
+               value="{{ service.jellyfin_url }}" 
+               placeholder="https://example.com" required>
+
         <label for="api_key">Jellyfin API Key</label>
-        <input type="text" id="api_key" name="api_key" value="{{ service.api_key }}">
+        <input type="text" id="api_key" name="api_key" 
+               value="{{ service.api_key }}" 
+               placeholder="Inserisci la chiave API" required>
 
         <!-- Altri campi -->
         <label for="sync_timeframe">Frequenza sincronizzazione (minuti)</label>
-        <input type="number" id="sync_timeframe" name="sync_timeframe" value="{{ service.sync_timeframe }}">
+        <input type="number" id="sync_timeframe" name="sync_timeframe" 
+               value="{{ service.sync_timeframe }}" 
+               min="1" max="1440" required>
 
-        <button type="submit">Salva</button>
+        <button type="submit" id="save-settings" class="btn">Salva</button>
     </form>
+    <div id="feedback"></div>
 
     <button id="sync-now" class="btn">Sincronizza Ora</button>
 </div>
 
 <script>
+    document.getElementById("save-settings").addEventListener("click", () => {
+        const feedback = document.getElementById("feedback");
+        feedback.innerHTML = "Salvataggio in corso...";
+        // Simula il salvataggio
+        setTimeout(() => feedback.innerHTML = "Impostazioni salvate con successo!", 2000);
+    });
+
     document.getElementById("sync-now").addEventListener("click", () => {
         fetch("/services/sync-now", { method: "POST" })
             .then(response => response.json())
