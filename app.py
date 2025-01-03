@@ -109,6 +109,9 @@ scheduler = BackgroundScheduler()
 # Funzione di Sync manuale
 def sync_libraries():
     service = Service.query.first()
+    if not service:
+        return jsonify({"success": False, "error": "Configurazione del servizio non trovata."})
+
     jellyfin_url = service.jellyfin_url
     api_key = service.jellyfin_api_key
 
@@ -116,12 +119,32 @@ def sync_libraries():
     try:
         response = requests.get(f"{jellyfin_url}/Library/MediaFolders", headers={"X-Emby-Token": api_key})
         response.raise_for_status()
-        media_folders = response.json()  # Lista delle cartelle media
-        # Salva o aggiorna le cartelle media nel tuo sistema
-        # Ad esempio: update_media_folders_in_db(media_folders)
-        return jsonify({"success": True})
+
+        # Parse della risposta JSON
+        data = response.json()
+        media_folders = data.get("Items", [])
+        if not media_folders:
+            return jsonify({"success": False, "error": "Nessuna libreria trovata nella risposta dell'API."})
+
+        # Salva o aggiorna le cartelle media nel database
+        for folder in media_folders:
+            folder_name = folder.get("Name")
+            folder_id = folder.get("Id")
+            if folder_name and folder_id:
+                existing_folder = MediaFolder.query.filter_by(folder_id=folder_id).first()
+                if existing_folder:
+                    existing_folder.name = folder_name
+                else:
+                    new_folder = MediaFolder(folder_id=folder_id, name=folder_name)
+                    db.session.add(new_folder)
+        
+        db.session.commit()
+        return jsonify({"success": True, "folders_synced": len(media_folders)})
+
+    except requests.exceptions.RequestException as req_err:
+        return jsonify({"success": False, "error": f"Errore nella richiesta API: {req_err}"})
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)})
+        return jsonify({"success": False, "error": f"Errore interno: {str(e)}"})
 
 
 # Funzione per ottenere il timeframe per la sincronizzazione
