@@ -361,7 +361,7 @@ def auto_sends():
 
 
 # Route eventi dashboard
-@app.route('/dashboard', methods=['GET'])
+@app.route('/dashboard', methods=['GET','POST'])
 def dashboard():
     schedules = AutoSend.query.all()  # Recupera tutti gli invii automatici
     service = Service.query.first()  # Recupera il primo servizio configurato (se presente)
