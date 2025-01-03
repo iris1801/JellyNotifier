@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jellyfin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Jellyfin Dashboard</h1>
+
+    <h2>Conteggi degli Oggetti</h2>
+    {% if movie_count is not none %}
+        <ul>
+            <li>Movies: {{ movie_count }}</li>
+            <li>Episodes: {{ episode_count }}</li>
+            <li>Series: {{ series_count }}</li>
+        </ul>
+    {% else %}
+        <p>Impossibile ottenere il conteggio degli oggetti.</p>
+    {% endif %}
+
+
+    <h2>Utenti</h2>
+    {% if users %}
+        <ul>
+            {% for user in users %}
+                <li>{{ user['Name'] }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No users found or unable to fetch data.</p>
+    {% endif %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <a href="{{ url_for('settings') }}">Impostazioni Jellyfin</a>
+
+</body>
+</html>

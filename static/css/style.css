@@ -1,0 +1,71 @@
+/* Impostazioni di base */
+body {
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(to right, #6a1b9a, #9c27b0, #f06292);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* Aggiungi il font QuickSand */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap');
+
+/* Styling della barra laterale e delle intestazioni */
+h1, h2 {
+    color: white;
+    text-align: center;
+    font-size: 2em;
+    margin-top: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Styling dei link */
+a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+a:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Aggiungi un po' di stile per il form */
+form {
+    text-align: center;
+    margin-top: 30px;
+}
+
+button {
+    background-color: #9c27b0;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #6a1b9a;
+}
+
+/* Errori */
+p[style="color: red;"] {
+    color: red;
+    font-weight: bold;
+}

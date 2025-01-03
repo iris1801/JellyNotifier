@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impostazioni Jellyfin</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Configurazione Jellyfin</h1>
+    <form action="{{ url_for('settings') }}" method="POST">
+        <label for="url">URL Jellyfin:</label>
+        <input type="text" id="url" name="url" value="{{ settings.url if settings else '' }}" required><br><br>
+        <label for="api_key">API Key Jellyfin:</label>
+        <input type="text" id="api_key" name="api_key" value="{{ settings.api_key if settings else '' }}" required><br><br>
+        <button type="submit">Salva Impostazioni</button>
+    </form>
+    <a href="{{ url_for('index') }}">Torna alla Dashboard</a>
+</body>
+</html>
