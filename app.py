@@ -408,6 +408,18 @@ def delete_person(person_id):
     flash('Persona eliminata con successo!', 'danger')
     return redirect(url_for('people'))
 
+# Route per librerie in dashboard
+@app.route('/dashboard/libraries', methods=['GET'])
+def dashboard_libraries():
+    try:
+        libraries = get_jellyfin_libraries()  # Chiama la funzione per ottenere le librerie
+        if "error" in libraries:
+            return jsonify({"success": False, "error": libraries["error"]}), 500
+
+        return jsonify({"success": True, "libraries": libraries})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 # Route Servizi unificata
 @app.route('/services', methods=['GET', 'POST'])
 def services():
