@@ -104,18 +104,20 @@ scheduler = BackgroundScheduler()
 
 # Funzione di Sync manuale
 def sync_libraries():
-    """
-    Sincronizza le librerie da Jellyfin.
-    """
-    logging.info("Sincronizzazione delle librerie in corso...")
+    service = Service.query.first()
+    jellyfin_url = service.jellyfin_url
+    api_key = service.api_key
+
+    # Prova a fare una richiesta API a Jellyfin per recuperare le cartelle media
     try:
-        libraries = get_jellyfin_libraries()
-        if "error" in libraries:
-            logging.error(f"Errore durante il recupero delle librerie: {libraries['error']}")
-        else:
-            logging.info(f"Librerie sincronizzate con successo: {libraries}")
+        response = requests.get(f"{jellyfin_url}/Library/MediaFolders", headers={"X-Emby-Token": api_key})
+        response.raise_for_status()
+        media_folders = response.json()  # Lista delle cartelle media
+        # Salva o aggiorna le cartelle media nel tuo sistema
+        # Ad esempio: update_media_folders_in_db(media_folders)
+        return jsonify({"success": True})
     except Exception as e:
-        logging.error(f"Errore nella sincronizzazione delle librerie: {str(e)}")
+        return jsonify({"success": False, "error": str(e)})
 
 
 # Funzione per ottenere il timeframe per la sincronizzazione
