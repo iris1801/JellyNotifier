@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Funzioni per chiamate API
 def monitor_media_added():
+    api_key = service.jellyfin_api_key
     service = Service.query.first()
     if service and service.monitor_media_added:
         try:
@@ -30,6 +31,7 @@ def monitor_media_added():
             logging.error(f"Errore nella chiamata API Media Aggiunti: {e}")
 
 def monitor_media_removed():
+    api_key = service.jellyfin_api_key
     service = Service.query.first()
     if service and service.monitor_media_removed:
         try:
@@ -42,6 +44,7 @@ def monitor_media_removed():
             logging.error(f"Errore nella chiamata API Media Rimossi: {e}")
 
 def monitor_stream_started():
+    api_key = service.jellyfin_api_key
     service = Service.query.first()
     if service and service.monitor_stream_started:
         try:
@@ -62,7 +65,7 @@ def get_jellyfin_libraries():
         return {"error": "Configurazione non trovata. Compila il menu Servizi."}
 
     url = service_config.url
-    api_key = service_config.api_key
+    api_key = service.jellyfin_api_key
 
     # Effettua la chiamata all'endpoint
     headers = {"X-Emby-Token": api_key}
@@ -88,6 +91,7 @@ def get_jellyfin_libraries():
 
 def monitor_transcoding():
     service = Service.query.first()
+    api_key = service.jellyfin_api_key
     if service and service.monitor_transcoding:
         try:
             response = requests.get(
@@ -106,7 +110,7 @@ scheduler = BackgroundScheduler()
 def sync_libraries():
     service = Service.query.first()
     jellyfin_url = service.jellyfin_url
-    api_key = service.api_key
+    api_key = service.jellyfin_api_key
 
     # Prova a fare una richiesta API a Jellyfin per recuperare le cartelle media
     try:
