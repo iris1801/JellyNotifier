@@ -59,26 +59,26 @@ def monitor_stream_started():
 
 # Funzione recupero librerie
 def get_jellyfin_libraries():
-    # Recupera le configurazioni dal database
     service_config = ServiceConfig.query.first()
     if not service_config:
+        logging.error("Configurazione non trovata. Compila il menu Servizi.")
         return {"error": "Configurazione non trovata. Compila il menu Servizi."}
 
     url = service_config.url
-    api_key = service.jellyfin_api_key
+    api_key = service_config.api_key  # Corretto il riferimento
 
-    # Effettua la chiamata all'endpoint
     headers = {"X-Emby-Token": api_key}
     try:
-        # Recupera l'ID utente
         response = requests.get(f"{url}/Users", headers=headers)
         response.raise_for_status()
         users = response.json()
 
-        # Usa il primo utente per semplicità
+        if not users:
+            logging.error("Nessun utente trovato.")
+            return {"error": "Nessun utente trovato."}
+
         user_id = users[0]["Id"]
 
-        # Recupera le librerie
         response = requests.get(f"{url}/Users/{user_id}/Views", headers=headers)
         response.raise_for_status()
         libraries = response.json()["Items"]
@@ -86,6 +86,7 @@ def get_jellyfin_libraries():
         return libraries
 
     except requests.exceptions.RequestException as e:
+        logging.error(f"Errore nella richiesta API: {e}")
         return {"error": str(e)}
 
 
