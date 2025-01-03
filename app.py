@@ -230,6 +230,12 @@ def start_scheduler():
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///settings.db'
 db = SQLAlchemy(app)
 
+# Classe mediafolder
+class MediaFolder(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    folder_id = db.Column(db.String, unique=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+
 
 # Classe unificata Service
 class Service(db.Model):
