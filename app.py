@@ -23,7 +23,7 @@ def monitor_media_added():
     if service and service.monitor_media_added:
         try:
             response = requests.get(
-                f"{service.jellyfin_url}/Library/MediaAdded",
+                f"{service.jellyfin_url}/Library/Movies/Added",
                 headers={"X-Emby-Token": service.jellyfin_api_key},
             )
             logging.info(f"Media Aggiunti: {response.json()}")
